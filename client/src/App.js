@@ -1,25 +1,21 @@
-import useApplicationData from './hooks/users';
 import './App.css';
 import io from 'socket.io-client';
+import Home from './components/Home';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 const socket = io("http://localhost:4000");
 
 function App() {
   
-    
-   
-  const {
-    state,
-    dispatch
-  } = useApplicationData();
-  console.log(state.users);
-  const userList = state.users.map((user) => (<li key={user.id} > {user.first_name} {user.last_name} {user.email} </li>
-));
-return (<div className="App" >
-<h1> Users </h1>
-
-<ul> {userList} </ul>
-</div >
-);
+  return (
+    <div className="App" >
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home socket={socket}/>} />
+      </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;

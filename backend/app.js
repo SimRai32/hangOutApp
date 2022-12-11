@@ -29,6 +29,10 @@ socketIO.on('connection', (socket) => {
 
   console.log(`⚡: ${socket.id} user just connected!`);
 
+  socket.on("send-username", (arg) => {
+    console.log(arg); // world
+  });
+
   socket.on('disconnect', () => {
 
     console.log('🔥: A user disconnected');

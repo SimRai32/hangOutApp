@@ -1,31 +1,53 @@
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import FormControlUnstyled from '@mui/base/FormControlUnstyled';
+import { Button, FormLabel, FormHelperText, Box, Input } from "@mui/material";
 
-const Home = () => {
-  const navigate = useNavigate();
+
+const Home = (props) => {
   const [userName, setUserName] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem('userName', userName);
-    navigate('/chat');
+  const handleSubmit = () => {
+    console.log("here");
+    props.socket.emit('send-username', userName);
   };
   return (
-    <form className="home__container" onSubmit={handleSubmit}>
-      <h2 className="home__header">Sign in to Open Chat</h2>
-      <label htmlFor="username">Username</label>
-      <input
-        type="text"
-        minLength={6}
-        name="username"
-        id="username"
-        className="username__input"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
-      />
-      <button className="home__cta">SIGN IN</button>
-    </form>
+    <div className='registerUser'>
+      <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      sx={{
+        color: 'white',
+        background: 'linear-gradient(to right bottom, #274B74, #E963FD)'
+      }}
+      >
+        <form onSubmit={handleSubmit} autoComplete="off">
+          <FormControlUnstyled defaultValue="" required>
+              <FormLabel style={{color: '#FFFFFF'}}>Username:</FormLabel>
+              <Input sx={{width: 215}} value={userName} onChange={event => setUserName(event.target.value)}/>
+              <FormHelperText />
+          </FormControlUnstyled>
+          <Button 
+            type="submit"
+            sx={[
+              {
+                backgroundColor: '#FFFFFF',
+                color: '#1a75d2',
+                boxShadow: '2px 2px 4px #000000;'
+              },
+              {
+                '&:hover': {
+                backgroundColor: '#1a75d2',
+                color: '#FFFFFF'
+              }}
+            ]}
+          >
+            Submit
+          </Button>
+        </form>
+      </Box>
+    </div>
   );
 };
 
