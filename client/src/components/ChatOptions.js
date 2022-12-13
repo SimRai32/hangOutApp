@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { Button, Box, Input } from "@mui/material";
+import React from 'react';
+import { Button, Box} from "@mui/material";
 // import { SocketContext } from '../context/socket';
 
 
@@ -9,7 +9,8 @@ const ChatOptions = () => {
     <div className='registerUser'>
       <Box
       display="flex"
-      justifyContent="center"
+      justifyContent="space-evenly"
+      space
       alignItems="center"
       minHeight="100vh"
       sx={{
