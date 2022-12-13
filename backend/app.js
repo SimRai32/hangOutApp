@@ -50,15 +50,15 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter(dbHelpers));
 
 
-app.get('/api', (req, res) => {
+// app.get('/api', (req, res) => {
 
-  res.json({
+//   res.json({
 
-    message: 'Hello world'
+//     message: 'Hello world'
 
-  });
+//   });
 
-});
+// });
 
 
 http.listen(PORT, () => {

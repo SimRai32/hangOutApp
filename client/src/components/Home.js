@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { Button, FormLabel, FormHelperText, Box, Input } from "@mui/material";
+import { SocketContext } from '../context/socket';
+import { useNavigate } from 'react-router-dom';
 
 
-const Home = (props) => {
+const Home = () => {
   const [userName, setUserName] = useState('');
+  const socket = useContext(SocketContext);
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    socket.emit('send-username', userName);
+    navigate('/options');
+  }
 
-  const handleSubmit = () => {
-    console.log("here");
-    props.socket.emit('send-username', userName);
-  };
   return (
     <div className='registerUser'>
       <Box
@@ -25,11 +30,12 @@ const Home = (props) => {
         <form onSubmit={handleSubmit} autoComplete="off">
           <FormControlUnstyled defaultValue="" required>
               <FormLabel style={{color: '#FFFFFF'}}>Username:</FormLabel>
-              <Input sx={{width: 215}} value={userName} onChange={event => setUserName(event.target.value)}/>
+              <Input sx={{width: 215}} data-testid="username" value={userName} onChange={event => setUserName(event.target.value)}/>
               <FormHelperText />
           </FormControlUnstyled>
           <Button 
             type="submit"
+            data-testid="usernameSubmit"
             sx={[
               {
                 backgroundColor: '#FFFFFF',
