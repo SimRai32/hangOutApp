@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Box} from "@mui/material";
-// import { SocketContext } from '../context/socket';
+
 
 
 const ChatOptions = () => {
-  // const socket = useContext(SocketContext);
+  
   return (
     <div className='registerUser'>
       <Box

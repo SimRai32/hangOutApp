@@ -10,11 +10,15 @@ const Home = (props) => {
   let testing = false;
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  // this function executes when the Confirm button is clicked
+  const handleConfirmation = (e) => {
+    // prevents page from refreshing
     e.preventDefault();
+    // sends username to the server
     socket.emit('send-username', userName);
     navigate('/options');
   }
+  // checking if this is a test run
   if (props.test) {
     testing = true;
   }
@@ -31,15 +35,14 @@ const Home = (props) => {
     }}
     >
       <TextField 
-        sx={{width: 215}} 
-        data-testid="username" 
+        sx={{width: 215}}  
         value={userName} 
         onChange={event => setUserName(event.target.value)}
         label="Username"
       />
       <br />
       <br />
-      <UserButton test = {testing} buttonName={"Submit"} onClick={handleSubmit}/>  
+      <UserButton test = {testing} buttonName={"Confirm"} onClick={handleConfirmation}/>  
     </Box>
     
   );
