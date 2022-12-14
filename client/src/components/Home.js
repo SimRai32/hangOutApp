@@ -35,7 +35,7 @@ const Home = (props) => {
     }}
     >
       <TextField 
-        sx={{width: 215}}  
+        sx={{width: 215 , paddingRight: 2}}  
         value={userName} 
         onChange={event => setUserName(event.target.value)}
         label="Username"

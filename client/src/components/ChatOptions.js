@@ -1,12 +1,20 @@
-import React from 'react';
-import { Button, Box} from "@mui/material";
-
-
+import React, { useContext, useState } from 'react';
+import { Box } from "@mui/material";
+import UserButton from './UserButton';
+import { SocketContext } from '../context/socket';
+import CreateChat from './CreateChat';
 
 const ChatOptions = () => {
-  
+  const socket = useContext(SocketContext);
+  const chatSelect = 'chat select';
+  const chatForm = 'chat form';
+  const [currentPage, setCurrentPage] = useState(chatSelect);
+  // switches from the two chat options to creating a chat room
+  const createChatForm = () => {
+    setCurrentPage(chatForm);
+  }
   return (
-    <div className='registerUser'>
+    <div className='chatOptions'>
       <Box
       display="flex"
       justifyContent="space-evenly"
@@ -18,39 +26,24 @@ const ChatOptions = () => {
         background: 'linear-gradient(to right bottom, #274B74, #E963FD)'
       }}
       >
-        
-          <Button 
-            sx={[
-              {
-                backgroundColor: '#FFFFFF',
-                color: '#1a75d2',
-                boxShadow: '2px 2px 4px #000000;'
-              },
-              {
-                '&:hover': {
-                backgroundColor: '#1a75d2',
-                color: '#FFFFFF'
-              }}
-            ]}
-          >
-            Join Chat
-          </Button>
-          <Button 
-            sx={[
-              {
-                backgroundColor: '#FFFFFF',
-                color: '#1a75d2',
-                boxShadow: '2px 2px 4px #000000;'
-              },
-              {
-                '&:hover': {
-                backgroundColor: '#1a75d2',
-                color: '#FFFFFF'
-              }}
-            ]}
-          >
-            Create Chat
-          </Button>
+        {currentPage === chatSelect && (
+          <>
+            <UserButton 
+              test={false}
+              buttonName={"Create Chat"}
+              onClick={createChatForm}
+            />
+            <UserButton
+              test={false}
+              buttonName={"Join Chat"} 
+            />
+          </>
+        )}
+
+        {currentPage === chatForm && (
+          <CreateChat />
+        )}
+          
       </Box>
     </div>
   );

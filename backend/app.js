@@ -11,6 +11,9 @@ const cors = require('cors');
 const http = require('http').Server(app);
 const PORT = 4000;
 app.use(cors());
+const users = {};
+const rooms = {};
+
 const socketIO = require('socket.io')(http, {
   // CORS needed to make a web socket connection 
   cors: {
@@ -23,14 +26,15 @@ const socketIO = require('socket.io')(http, {
 
 });
 
-
 // connect to client side
 socketIO.on('connection', (socket) => {
 
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on("send-username", (arg) => {
-    console.log(arg); // world
+    users[arg] = arg; 
+    socket.username = arg;
+    console.log(users);
   });
 
   socket.on('disconnect', () => {
@@ -48,18 +52,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter(dbHelpers));
-
-
-// app.get('/api', (req, res) => {
-
-//   res.json({
-
-//     message: 'Hello world'
-
-//   });
-
-// });
-
 
 http.listen(PORT, () => {
 

@@ -1,13 +1,12 @@
 import React from "react";
 import { Button } from "@mui/material";
 export default function UserButton(props) {
-  console.log(props.test);
   return (
   
     < Button  
       onClick = { props.onClick }
       disabled = { props.test }
-      data-testid="usernameSubmit"
+      data-testid="Button"
       sx={[
         {
           backgroundColor: '#FFFFFF',
