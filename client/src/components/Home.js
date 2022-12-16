@@ -16,6 +16,8 @@ const Home = (props) => {
     e.preventDefault();
     // sends username to the server
     socket.emit('send-username', userName);
+    window.localStorage.setItem("userName", userName);
+    window.localStorage.setItem("id", 0);
     navigate('/options');
   }
   // checking if this is a test run

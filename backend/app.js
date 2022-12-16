@@ -32,11 +32,18 @@ socketIO.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on("send-username", (arg) => {
-    users[arg] = arg; 
+    users[ arg ] = arg; 
     socket.username = arg;
-    console.log(users);
   });
 
+  socket.on("create-room", (arg)=> {
+    rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password };
+    socket.join(arg.chatName);
+  });
+  socket.on("send-message", (arg)=> {
+    console.log(arg.text);
+    socketIO.emit('messageResponse', arg);
+  });
   socket.on('disconnect', () => {
 
     console.log('🔥: A user disconnected');

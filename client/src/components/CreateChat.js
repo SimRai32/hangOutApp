@@ -2,13 +2,16 @@ import React, { useContext, useState } from 'react';
 import { Box, FormHelperText, FormLabel, Input, Button } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
-
+import { useNavigate } from 'react-router-dom';
 const CreateChat = () => {
   const socket = useContext(SocketContext);
   const [chatName, setChatName] = useState('');
   const [password, setPassword] = useState('');
-  const validate = () => {
-    
+  const navigate = useNavigate();
+  const validate = (e) => {
+    e.preventDefault();
+    socket.emit('create-room', { chatName, password });
+    navigate('/chatroom');
   }
   return (
     <div className='createChat'>
