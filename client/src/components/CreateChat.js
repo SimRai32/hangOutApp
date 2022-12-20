@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Box, FormHelperText, FormLabel, Input, Button } from "@mui/material";
+import { FormHelperText, FormLabel, Input, Button } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';

@@ -5,10 +5,8 @@ import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
 const Chat = () => {
   const socket = useContext(SocketContext);
-  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   socket.on('messageResponse', (data) => setMessages([...messages, data]));
-    console.log(messages);
   return (
     <div className='chat'>
       <Box

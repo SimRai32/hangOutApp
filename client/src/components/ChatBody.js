@@ -67,10 +67,6 @@ const ChatBody = ({ messages }) => {
               </div>
             )
           )}
-
-          <div className="message__status">
-            <p>Someone is typing...</p>
-          </div>
           <div ref={messagesEndRef} />
         </ Box> 
       </div>

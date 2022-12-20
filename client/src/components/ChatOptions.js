@@ -1,17 +1,20 @@
 import React, { useContext, useState } from 'react';
 import { Box } from "@mui/material";
 import UserButton from './UserButton';
-import { SocketContext } from '../context/socket';
 import CreateChat from './CreateChat';
+import JoinChat from './JoinChat';
 
 const ChatOptions = () => {
-  const socket = useContext(SocketContext);
   const chatSelect = 'chat select';
   const chatForm = 'chat form';
+  const chatList = 'chat list';
   const [currentPage, setCurrentPage] = useState(chatSelect);
   // switches from the two chat options to creating a chat room
   const createChatForm = () => {
     setCurrentPage(chatForm);
+  }
+  const getChatList = () => {
+    setCurrentPage(chatList);
   }
   return (
     <div className='chatOptions'>
@@ -35,13 +38,18 @@ const ChatOptions = () => {
             />
             <UserButton
               test={false}
-              buttonName={"Join Chat"} 
+              buttonName={"Join Chat"}
+              onClick={getChatList} 
             />
           </>
         )}
 
         {currentPage === chatForm && (
           <CreateChat />
+        )}
+
+        {currentPage === chatList && (
+          <JoinChat />
         )}
           
       </Box>

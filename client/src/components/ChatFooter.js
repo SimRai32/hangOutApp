@@ -23,7 +23,7 @@ const ChatFooter = () => {
       setMessage('');
     }
   };
-  
+
   return <div className="chat__footer">
     <form className="form" onSubmit={handleSendMessage}>
     <FormControlUnstyled defaultValue="" required>
@@ -45,7 +45,9 @@ const ChatFooter = () => {
               color: '#FFFFFF'
           }}
         ]}
-        >SEND</ Button >
+        >
+          SEND
+        </ Button >
         </ FormControlUnstyled>
       </form>
   </div>;

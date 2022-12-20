@@ -13,7 +13,7 @@ const PORT = 4000;
 app.use(cors());
 const users = {};
 const rooms = {};
-
+let roomID = 0;
 const socketIO = require('socket.io')(http, {
   // CORS needed to make a web socket connection 
   cors: {
@@ -32,18 +32,42 @@ socketIO.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on("send-username", (arg) => {
+    
     users[ arg ] = arg; 
     socket.username = arg;
+
   });
 
-  socket.on("create-room", (arg)=> {
-    rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password };
+  socket.on("create-room", (arg) => {
+
+    rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password, id:roomID };
+    roomID++;
     socket.join(arg.chatName);
+
   });
-  socket.on("send-message", (arg)=> {
-    console.log(arg.text);
+
+  socket.on("retrieve chatrooms", () => {
+
+    socketIO.emit('chat list', rooms);
+  
+  });
+
+
+  socket.on("join-room", (arg) => {
+
+    if ( rooms[ arg.chatName ] && rooms[ arg.chatName ].password === arg.password) {
+      socket.join(arg.chatName);
+      console.log("joined room!");
+    }
+
+  });
+
+  socket.on("send-message", (arg) => {
+
     socketIO.emit('messageResponse', arg);
+
   });
+
   socket.on('disconnect', () => {
 
     console.log('🔥: A user disconnected');
