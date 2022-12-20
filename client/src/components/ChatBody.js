@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserButton from './UserButton';
 import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
-import { positions } from '@mui/system';
 
 const ChatBody = ({ messages }) => {
   const navigate = useNavigate();
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    // get the reference for the end of the messages and scrolls to it smoothly
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+  // every time a message is added the chatbox scrolls to the bottom
+  useEffect(scrollToBottom, [messages]);
   const handleLeaveChat = () => {
     navigate('/');
   };
@@ -64,6 +71,7 @@ const ChatBody = ({ messages }) => {
           <div className="message__status">
             <p>Someone is typing...</p>
           </div>
+          <div ref={messagesEndRef} />
         </ Box> 
       </div>
     </>
