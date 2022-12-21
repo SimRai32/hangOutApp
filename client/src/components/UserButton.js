@@ -1,11 +1,15 @@
 import React from "react";
 import { Button } from "@mui/material";
-export default function UserButton(props) {
-  return (
+
+ const UserButton = props => {
+
+  const { test, onClick, buttonName } = props;
   
+  return (
+
     < Button  
-      onClick = { props.onClick }
-      disabled = { props.test }
+      onClick = { onClick }
+      disabled = { test }
       data-testid="Button"
       sx={[
         {
@@ -19,7 +23,10 @@ export default function UserButton(props) {
           color: '#FFFFFF'
         }}
       ]} >
-      {props.buttonName}
+      { buttonName }
     </ Button >
+
   );
 }
+
+export default UserButton;
