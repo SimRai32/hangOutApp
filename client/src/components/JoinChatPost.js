@@ -4,7 +4,6 @@ import TableCell from '@mui/material/TableCell';
 import UserButton from './UserButton';
 
 const JoinChatPost = props => {
-  
   return (
     <TableRow
       key={ props.id }
@@ -14,7 +13,7 @@ const JoinChatPost = props => {
         { props.chatName }
       </TableCell>
       <TableCell align="right">
-        < UserButton buttonName="Join" test={false} onClick={props.joiningChat(props.chatName)} />
+        < UserButton buttonName="Join" test={ false } onClick={ props.joiningChat } />
       </TableCell>
     </TableRow>
   )

@@ -13,6 +13,7 @@ const JoinChat = () => {
   const [ chatName, setChatName ] = useState('');
   const [ password, setPassword ] = useState('');
   const ref = useRef( null );
+  // scrolls to the top of the page when the join button is pressed
   const joiningChat = ( name ) => {
     setChatName( name );
     ref.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,19 +27,25 @@ const JoinChat = () => {
       setChatList( data );
     });
   }, []);
-  // makes an array of each chat room in a tag
+  
   useEffect(() => {
+    // checks if there is at least 1 available chatroom
     if( chatList ) {
+      // makes an array of each chat room in a tag
       const chats = chatListKeys.map( currentKey => {
+        const key = chatList[ currentKey ].id;
+        const chatName = chatList[ currentKey ].chatName;
+        const foundChat = () => { joiningChat( chatList[ currentKey ].chatName ) }
         return (
-          < JoinChatPost key={ chatList[ currentKey ].id } chatName={ chatList[ currentKey ].chatName } joiningChat={ joiningChat } />
+          < JoinChatPost key = { key } chatName={ chatName }  joiningChat={ foundChat } />
         );
       });
+      // sets the chat room array to the variable allChatRooms
       setAllChatRooms( chats );
-      console.log(chats);
     }
   }, [chatList])
   const navigate = useNavigate();
+  // checks if user has the correct password and if so puts them into the chatroom (in progress)
   const validate = (e) => {
     e.preventDefault();
     socket.emit( 'join-room', { chatName, password } );
