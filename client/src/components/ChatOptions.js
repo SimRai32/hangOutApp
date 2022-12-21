@@ -21,7 +21,6 @@ const ChatOptions = () => {
       <Box
       display="flex"
       justifyContent="space-evenly"
-      space
       alignItems="center"
       minHeight="100vh"
       sx={{

@@ -17,6 +17,7 @@ const ChatBody = ({ messages }) => {
   const handleLeaveChat = () => {
     navigate('/');
   };
+  // style settings for the message box
   const boxSettings = (color, marginLength) => {
     return {
       width: 'auto',
