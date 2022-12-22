@@ -10,7 +10,7 @@ const Chat = () => {
   const [ messages, setMessages ] = useState([]);
 
 
-  socket.on('messageResponse', data => setMessages([ ...messages, data ]));
+  socket.on( 'messageResponse', data => setMessages([ ...messages, data ]) );
 
 
   return (

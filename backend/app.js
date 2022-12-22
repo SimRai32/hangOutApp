@@ -28,6 +28,7 @@ const socketIO = require( 'socket.io' )( http, {
 
 });
 
+
 // connect to client side
 socketIO.on( 'connection', ( socket ) => {
 
@@ -40,13 +41,28 @@ socketIO.on( 'connection', ( socket ) => {
 
   });
 
+
   socket.on( 'create-room', ( arg ) => {
 
-    rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password, id:roomID };
-    roomID++;
-    socket.join( arg.chatName );
+    let check = 'new'
+
+    if ( rooms[ arg.chatName ] ) {
+
+      console.log("here");
+      check = 'exists';
+
+    } else {
+
+      rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password, id:roomID };
+      roomID++;
+      socket.join( arg.chatName );
+
+    }
+
+    socketIO.emit( 'room-check', check );
 
   });
+
 
   socket.on( 'retrieve chatrooms', () => {
 
@@ -64,11 +80,13 @@ socketIO.on( 'connection', ( socket ) => {
 
   });
 
+
   socket.on( 'send-message', ( arg ) => {
 
     socketIO.emit( 'messageResponse', arg );
 
   });
+
 
   socket.on( 'disconnect', () => {
 

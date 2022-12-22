@@ -7,22 +7,32 @@ import UserButton from './UserButton';
 const Home = props => {
 
   const [ userName, setUserName ] = useState('');
+  const [ nameError, setNameError ] = useState(false);
+  const isError = 'error';
   const { test } = props;
   let testing = false;
   const socket = useContext( SocketContext );
   const navigate = useNavigate();
-
+  const [ errorMessage, setErrorMessage ] = useState('');
 
   // this function executes when the Confirm button is clicked
   const handleConfirmation = e => {
 
     // prevents page from refreshing
     e.preventDefault();
+
     // sends username to the server
+    if ( userName ) {
+
     socket.emit( 'send-username', userName );
     window.localStorage.setItem( 'userName', userName );
     window.localStorage.setItem( 'id', 0 );
     navigate( '/options' );
+
+    }
+
+    setNameError( isError );
+    setErrorMessage( 'You must enter a username' );
 
   }
 
@@ -52,6 +62,8 @@ const Home = props => {
         value={userName} 
         onChange={ event => setUserName( event.target.value ) }
         label='Username'
+        error={ nameError }
+        helperText={ errorMessage }
       />
       < br />
       < br />
