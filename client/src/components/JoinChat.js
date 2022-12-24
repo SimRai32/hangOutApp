@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { FormHelperText, FormLabel, Input, Button, TableHead, TableRow, Paper, Table, TableBody, TableContainer, TableCell } from "@mui/material";
+import { Alert, Collapse, FormHelperText, FormLabel, Input, Button, TableHead, TableRow, Paper, Table, TableBody, TableContainer, TableCell } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';
@@ -11,12 +11,16 @@ const JoinChat = () => {
   const socket = useContext( SocketContext );
   const show = true;
   const hide = false;
+  const noError = 'no error';
+  const roomNameError = 'error';
   const [ chatList, setChatList ] = useState('');
+  const [ checkError, setCheckError ] = useState( noError );
   const [ allChatRooms, setAllChatRooms ] = useState([]);
   const [ chatListKeys, setChatListKeys ] = useState([]);
   const [ chatName, setChatName ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ showList, setShowList ] = useState( hide );
+  const [ errorMessage, setErrorMessage ] = useState('');
   const ref = useRef( null );
   const navigate = useNavigate();
 
@@ -72,12 +76,14 @@ const JoinChat = () => {
 
         const key = chatList[ currentKey ].id;
         const chatName = chatList[ currentKey ].chatName;
+
         const foundChat = () => { 
 
           joiningChat( chatName );
           setShowList( hide ); 
 
         }
+
         return (
           < JoinChatPost key = { key } chatName={ chatName }  joiningChat={ foundChat } />
         );
@@ -96,8 +102,29 @@ const JoinChat = () => {
   const validate = e => {
 
     e.preventDefault();
-    socket.emit( 'join-room', { chatName, password } );
-    navigate( '/chatroom' );
+
+    if ( password && chatName ) {
+
+      socket.emit( 'join-room', { chatName, password } );
+      
+      socket.on('room-credentials-check', check => {
+
+        if ( check === 'passed' ) navigate( '/chatroom' );
+
+        setErrorMessage( 'Error: Chat name and password do not match up' );
+  
+      });
+
+
+    }
+
+    if( !password || !chatName ) {
+
+      setErrorMessage( 'Error: Both chat name and password must be filled out' );
+
+    }
+
+    setCheckError( roomNameError );
 
   }
 
@@ -105,23 +132,41 @@ const JoinChat = () => {
   return (
 
     < div className='joinChat' >
+      { checkError === 'error' && (
+          < Collapse in={ checkError === 'error' } >
+            < Alert severity='error' variant='outlined' >
+              { errorMessage }
+            </ Alert >
+        </ Collapse >
+        )}
       < div ref={ ref } />
       < form onSubmit={ validate } autoComplete='off' >
         < FormControlUnstyled defaultValue='' required >
           < FormLabel style={{ color: '#FFFFFF' }} >Chat Name:</ FormLabel >
-          < Input sx={{ width: 215 }} value={ chatName } onChange={ event => setChatName( event.target.value ) } />
+          < Input sx={{ width: 215 }} value={ chatName } error={ roomNameError === checkError } onChange={ event => setChatName( event.target.value ) } />
           < FormHelperText />
         </ FormControlUnstyled >
         < br />
         < FormControlUnstyled defaultValue='' required >
           < FormLabel style={{ color: '#FFFFFF' }} >Password:</ FormLabel >
-          < Input sx={{ width: 225 }} type='password' onChange={ event => setPassword( event.target.value ) } />
+          < Input sx={{ width: 225 }} type='password' value={ password } error={ roomNameError === checkError } onChange={ event => setPassword( event.target.value ) } />
           < FormHelperText />
         </ FormControlUnstyled >
         < br />
         < Button 
           type='submit'
-          sx={{ backgroundColor: '#FFFFFF', color: '#1a75d2', boxShadow: '2px 2px 4px #000000;' }}
+          sx={[
+            { 
+              backgroundColor: '#FFFFFF',
+              color: '#1a75d2', 
+              boxShadow: '2px 2px 4px #000000;' 
+            },
+            { 
+              '&:hover': {
+              backgroundColor: '#1a75d2',
+              color: '#FFFFFF'
+            }}
+          ]}
           >Join
         </ Button >
       </ form >     

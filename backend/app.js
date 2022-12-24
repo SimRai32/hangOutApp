@@ -44,18 +44,18 @@ socketIO.on( 'connection', ( socket ) => {
 
   socket.on( 'create-room', ( arg ) => {
 
-    let check = 'new'
+    let check = 'new';
+    const { chatName, password } = arg;
 
-    if ( rooms[ arg.chatName ] ) {
+    if ( rooms[ chatName ] ) {
 
-      console.log("here");
       check = 'exists';
 
     } else {
 
-      rooms[ arg.chatName ] = { chatName: arg.chatName, password:arg.password, id:roomID };
+      rooms[ chatName ] = { chatName: chatName, password: password, id: roomID };
       roomID++;
-      socket.join( arg.chatName );
+      socket.join( chatName );
 
     }
 
@@ -73,10 +73,21 @@ socketIO.on( 'connection', ( socket ) => {
 
   socket.on( 'join-room', ( arg ) => {
 
-    if ( rooms[ arg.chatName ] && rooms[ arg.chatName ].password === arg.password ) {
-      socket.join( arg.chatName );
+    let check = 'passed'
+    const { chatName, password } = arg;
+
+    if ( rooms[ chatName ] && rooms[ chatName ].password === password ) {
+
+      socket.join( chatName );
       console.log( 'joined room!' );
+
+    } else {
+
+      check = 'failed';
+
     }
+
+    socketIO.emit( 'room-credentials-check', check );
 
   });
 

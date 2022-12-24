@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Alert, AlertTitle, Collapse, FormHelperText, FormLabel, Input, Button } from "@mui/material";
+import { Alert, Collapse, FormHelperText, FormLabel, Input, Button } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';
@@ -10,35 +10,46 @@ const CreateChat = () => {
   const roomNameError = 'error';
   const socket = useContext( SocketContext );
   const [ chatName, setChatName ] = useState('');
-  const [ checkRoomName, setCheckRoomName ] = useState('');
-  const [ checkError, setCheckError ] = useState(noError);
+  const [ checkError, setCheckError ] = useState( noError );
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
-  const errorMessage = 'Error: Room already exists. Please pick a different name';
+  const [ errorMessage, setErrorMessage ] = useState('');
 
   const validate = e => {
 
     e.preventDefault();
-    socket.emit( 'create-room', { chatName, password });
-    socket.on('room-check', check => {
+    
+    if ( chatName && password ) {
 
-      setCheckRoomName( check );
-      if ( check === 'new' ) navigate( '/chatroom' );
+      socket.emit( 'create-room', { chatName, password });
 
-    });
+      socket.on('room-check', check => {
+        
+        if ( check === 'new' ) navigate( '/chatroom' );
+  
+      });
 
-    setCheckError(roomNameError);
+      setErrorMessage( 'Error: Room already exists. Please pick a different name' );
+
+    }
+
+    if( !password || !chatName ) {
+
+      setErrorMessage( 'Error: Both chat name and password must be filled out' );
+
+    }
+    
+  
+    setCheckError( roomNameError );
 
   }
-
 
   return (
 
     < div className='createChat' >
-        { checkRoomName === 'exists' && (
-          < Collapse in={ checkRoomName === 'exists' } >
+        { checkError === 'error' && (
+          < Collapse in={ checkError === 'error' } >
             < Alert severity='error' variant='outlined' >
-              
               { errorMessage }
             </ Alert >
         </ Collapse >
