@@ -15,16 +15,20 @@ const CreateChat = () => {
   const navigate = useNavigate();
   const [ errorMessage, setErrorMessage ] = useState('');
 
+  //
   const validate = e => {
 
     e.preventDefault();
     
     if ( chatName && password ) {
 
+      // sends chatName and password to server to check if it already exists and if not creates it
       socket.emit( 'create-room', { chatName, password });
 
+      // the result of checking chatroom names
       socket.on('room-check', check => {
         
+        // if the chatroom did not exist it sends the user into that chatroom
         if ( check === 'new' ) navigate( '/chatroom' );
   
       });
@@ -33,13 +37,14 @@ const CreateChat = () => {
 
     }
 
+    // checks if both password and chatName are filled in
     if( !password || !chatName ) {
 
       setErrorMessage( 'Error: Both chat name and password must be filled out' );
 
     }
     
-  
+    // an error is confirmed 
     setCheckError( roomNameError );
 
   }

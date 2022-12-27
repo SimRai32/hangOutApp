@@ -6,7 +6,9 @@ import ChatOptions from './components/ChatOptions';
 import Chat from './components/Chat';
 
 function App() { 
+
   return (
+
     < div className='App' >
       < SocketContext.Provider value={ socket } >
         < BrowserRouter >
@@ -18,7 +20,9 @@ function App() {
         </ BrowserRouter >
       </ SocketContext.Provider >
     </ div >
+
   );
+  
 }
 
 export default App;

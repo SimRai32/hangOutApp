@@ -103,12 +103,15 @@ const JoinChat = () => {
 
     e.preventDefault();
 
+    // checks if both password and chat name is filled out
     if ( password && chatName ) {
 
+      // sends password and chat name to the server to see if there is any matching pair
       socket.emit( 'join-room', { chatName, password } );
       
       socket.on('room-credentials-check', check => {
 
+        // if there was a matching pair the user is sent into the chatroom
         if ( check === 'passed' ) navigate( '/chatroom' );
 
         setErrorMessage( 'Error: Chat name and password do not match up' );
@@ -124,6 +127,7 @@ const JoinChat = () => {
 
     }
 
+    // confirmed error
     setCheckError( roomNameError );
 
   }

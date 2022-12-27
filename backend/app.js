@@ -42,15 +42,18 @@ socketIO.on( 'connection', ( socket ) => {
   });
 
 
+  // creates new room
   socket.on( 'create-room', ( arg ) => {
 
     let check = 'new';
     const { chatName, password } = arg;
 
+    // checks if room already exists
     if ( rooms[ chatName ] ) {
 
       check = 'exists';
 
+    // creates room if it does not exist already
     } else {
 
       rooms[ chatName ] = { chatName: chatName, password: password, id: roomID };
@@ -59,25 +62,31 @@ socketIO.on( 'connection', ( socket ) => {
 
     }
 
+    // client is informed whether the room was created
     socketIO.emit( 'room-check', check );
 
   });
 
 
+  // used to retrieve all chatroom info
   socket.on( 'retrieve chatrooms', () => {
 
+    // information about all rooms sent to client
     socketIO.emit( 'chat list', rooms );
   
   });
 
 
+  // tries to connect user to a created room
   socket.on( 'join-room', ( arg ) => {
 
     let check = 'passed'
     const { chatName, password } = arg;
 
+    // checks if user's chat name and password match any room
     if ( rooms[ chatName ] && rooms[ chatName ].password === password ) {
 
+      // connects user to chatroom
       socket.join( chatName );
       console.log( 'joined room!' );
 
@@ -87,6 +96,7 @@ socketIO.on( 'connection', ( socket ) => {
 
     }
 
+    // client is informed whether there was a match
     socketIO.emit( 'room-credentials-check', check );
 
   });
