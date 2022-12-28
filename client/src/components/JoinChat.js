@@ -69,7 +69,7 @@ const JoinChat = () => {
   useEffect(() => {
 
     // checks if there is at least 1 available chatroom
-    if( chatList ) {
+    if ( chatList ) {
 
       // makes an array of each chat room in a tag
       const chats = chatListKeys.map( currentKey => {

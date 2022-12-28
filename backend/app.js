@@ -13,6 +13,7 @@ const PORT = 4000;
 app.use( cors() );
 const users = {};
 const rooms = {};
+const ids = {}; 
 let roomID = 0;
 
 
@@ -32,12 +33,16 @@ const socketIO = require( 'socket.io' )( http, {
 // connect to client side
 socketIO.on( 'connection', ( socket ) => {
 
-  console.log( `⚡: ${socket.id} user just connected!` );
+  const id = socket.id;
+  console.log( `⚡: ${ id } user just connected!` );
+  
 
   socket.on('send-username', ( arg ) => {
     
+    
     users[ arg ] = arg; 
     socket.username = arg;
+    ids[ id ]= {};
 
   });
 
@@ -46,8 +51,9 @@ socketIO.on( 'connection', ( socket ) => {
   socket.on( 'create-room', ( arg ) => {
 
     let check = 'new';
+    
     const { chatName, password } = arg;
-
+    console.log( rooms[ chatName ] );
     // checks if room already exists
     if ( rooms[ chatName ] ) {
 
@@ -83,11 +89,14 @@ socketIO.on( 'connection', ( socket ) => {
     let check = 'passed'
     const { chatName, password } = arg;
 
+    console.log(chatName);
     // checks if user's chat name and password match any room
     if ( rooms[ chatName ] && rooms[ chatName ].password === password ) {
 
+      
       // connects user to chatroom
       socket.join( chatName );
+      ids[ id ].room = chatName;
       console.log( 'joined room!' );
 
     } else {
@@ -104,7 +113,8 @@ socketIO.on( 'connection', ( socket ) => {
 
   socket.on( 'send-message', ( arg ) => {
 
-    socketIO.emit( 'messageResponse', arg );
+     
+    socketIO.to( ids[ id ].room ).emit( 'messageResponse', arg );
 
   });
 

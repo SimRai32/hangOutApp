@@ -22,6 +22,7 @@ const ChatBody = ({ messages }) => {
   useEffect( scrollToBottom, [ messages ] );
 
 
+  // puts user back to the main page
   const handleLeaveChat = () => {
 
     navigate( '/' );

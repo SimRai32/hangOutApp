@@ -7,7 +7,7 @@ import UserButton from './UserButton';
 const Home = props => {
 
   const [ userName, setUserName ] = useState('');
-  const [ nameError, setNameError ] = useState(false);
+  const [ nameError, setNameError ] = useState( false );
   const isError = 'error';
   const { test } = props;
   let testing = false;
