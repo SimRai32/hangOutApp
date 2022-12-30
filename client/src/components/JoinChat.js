@@ -121,7 +121,7 @@ const JoinChat = () => {
 
     }
 
-    if( !password || !chatName ) {
+    if ( !password || !chatName ) {
 
       setErrorMessage( 'Error: Both chat name and password must be filled out' );
 
@@ -178,23 +178,24 @@ const JoinChat = () => {
       {( showList === hide ) && 
       < UserButton test={ false } buttonName={ 'Chat List' }  onClick={  showingList  } />
       }
-      {( showList === show ) && <> 
-        < TableContainer component={ Paper } >
-          < Table sx={{ minWidth: 375 }} aria-label='simple table' >
-            < TableHead >
-              < TableRow >
-                < TableCell >< b >Chat Name</ b ></ TableCell >
-                < TableCell align='right' ></ TableCell >
-              </ TableRow >
-            </ TableHead >
-            < TableBody style={{ color: '#1a75d2' }} >
-              { allChatRooms }
-            </ TableBody >
-          </ Table >
-        </ TableContainer >
-        < br />
-        < UserButton test={ false } buttonName={ 'Hide Chat List' }  onClick={ hidingList } />
-      </>
+      {( showList === show ) && 
+        <> 
+          < TableContainer component={ Paper } >
+            < Table sx={{ minWidth: 375 }} aria-label='simple table' >
+              < TableHead >
+                < TableRow >
+                  < TableCell >< b >Chat Name</ b ></ TableCell >
+                  < TableCell align='right' ></ TableCell >
+                </ TableRow >
+              </ TableHead >
+              < TableBody style={{ color: '#1a75d2' }} >
+                { allChatRooms }
+              </ TableBody >
+            </ Table >
+          </ TableContainer >
+          < br />
+          < UserButton test={ false } buttonName={ 'Hide Chat List' }  onClick={ hidingList } />
+        </>
       }        
     </ div >
 

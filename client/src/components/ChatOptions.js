@@ -3,13 +3,44 @@ import { Box, Container } from "@mui/material";
 import UserButton from './UserButton';
 import CreateChat from './CreateChat';
 import JoinChat from './JoinChat';
+import { useNavigate } from 'react-router-dom';
+
 
 const ChatOptions = () => {
 
   const chatSelect = 'chat select';
   const chatForm = 'chat form';
   const chatList = 'chat list';
+  const rightSide = 'flex-end';
+  const middle = 'center';
+  const navigate = useNavigate();
   const [ currentPage, setCurrentPage ] = useState( chatSelect );
+
+
+  // function that stylizes each container
+  const containerStyling = ( horizontal ) => {
+
+    return {
+
+      display: 'flex',
+      justifyContent: horizontal,
+      alignContent: 'center',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      gap: '10px',
+      height: 'calc(100vh - 100px)',
+
+    };
+
+  };
+
+
+  // sends user back to username creation page
+  const backToUsername = () => {
+
+    navigate( '/' );
+
+  }
 
 
   // switches from the two chat options to creating a chat room
@@ -27,6 +58,7 @@ const ChatOptions = () => {
 
   }
 
+  // sends user back to chat options
   const goBack = () => {
 
     setCurrentPage( chatSelect );
@@ -48,39 +80,50 @@ const ChatOptions = () => {
       }}
       >
         { currentPage === chatSelect && (
-          <>
+          < Container sx={ containerStyling( rightSide ) } >
             < UserButton 
               test={ false }
-              buttonName={ 'Create Chat' }
-              onClick={ createChatForm }
+              buttonName={ 'Back' }
+              onClick={ backToUsername }
             />
-            < UserButton
-              test={ false }
-              buttonName={ 'Join Chat' }
-              onClick={ getChatList } 
-            />
-          </>
+            < Container sx={ containerStyling( middle ) } >
+              < UserButton 
+                test={ false }
+                buttonName={ 'Create Chat' }
+                onClick={ createChatForm }
+              />
+              < UserButton
+                test={ false }
+                buttonName={ 'Join Chat' }
+                onClick={ getChatList } 
+              />
+            </ Container >
+          </ Container >
         )}
 
         { currentPage === chatForm && (
-          < Container >
+          < Container sx={ containerStyling( rightSide ) } >
             < UserButton 
               test={ false }
               buttonName={ 'Back' }
               onClick={ goBack }
             />
-            < CreateChat />
+            < Container sx={ containerStyling( middle ) } >
+              < CreateChat />
+            </ Container >
           </ Container >
         )}
 
         { currentPage === chatList && (
-          < Container >
+          < Container sx={ containerStyling( rightSide ) } >
             < UserButton 
               test={ false }
               buttonName={ 'Back' }
               onClick={ goBack }
             />
-            < JoinChat />
+            < Container sx={ containerStyling( middle ) } >
+              < JoinChat />
+            </ Container >
           </ Container >
         )}
       </ Box >

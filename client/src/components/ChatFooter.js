@@ -10,7 +10,7 @@ const ChatFooter = () => {
   // gets username from local storage
   const user = localStorage.getItem( 'userName' );
 
-
+  // function that sends message to the server
   const handleSendMessage =  e  => {
 
     e.preventDefault();
@@ -19,6 +19,7 @@ const ChatFooter = () => {
 
       let id = Number( localStorage.getItem( 'id' ) ) + 1;
       localStorage.setItem( 'id', id );
+
       // sends message information to the server to store
       socket.emit( 'send-message', {
 
@@ -27,6 +28,7 @@ const ChatFooter = () => {
         id
         
       });
+
       setMessage('');
 
     }
