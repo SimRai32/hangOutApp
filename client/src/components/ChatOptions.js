@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import UserButton from './UserButton';
 import CreateChat from './CreateChat';
 import JoinChat from './JoinChat';
@@ -24,6 +24,12 @@ const ChatOptions = () => {
   const getChatList = () => {
 
     setCurrentPage( chatList );
+
+  }
+
+  const goBack = () => {
+
+    setCurrentPage( chatSelect );
 
   }
 
@@ -57,11 +63,25 @@ const ChatOptions = () => {
         )}
 
         { currentPage === chatForm && (
-          < CreateChat />
+          < Container >
+            < UserButton 
+              test={ false }
+              buttonName={ 'Back' }
+              onClick={ goBack }
+            />
+            < CreateChat />
+          </ Container >
         )}
 
         { currentPage === chatList && (
-          < JoinChat />
+          < Container >
+            < UserButton 
+              test={ false }
+              buttonName={ 'Back' }
+              onClick={ goBack }
+            />
+            < JoinChat />
+          </ Container >
         )}
       </ Box >
     </ div >

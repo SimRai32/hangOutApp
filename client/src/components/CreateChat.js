@@ -15,10 +15,17 @@ const CreateChat = () => {
   const navigate = useNavigate();
   const [ errorMessage, setErrorMessage ] = useState('');
 
-  //
+  // function that confirms an error
+  const foundError = () => {
+    setCheckError( roomNameError );
+  };
+
+
+  // validates the chatroom that is trying to be created
   const validate = e => {
 
     e.preventDefault();
+    setErrorMessage( 'Error: Both chat name and password must be filled out' );
     
     if ( chatName && password ) {
 
@@ -35,17 +42,10 @@ const CreateChat = () => {
 
       setErrorMessage( 'Error: Room already exists. Please pick a different name' );
 
-    }
-
-    // checks if both password and chatName are filled in
-    if( !password || !chatName ) {
-
-      setErrorMessage( 'Error: Both chat name and password must be filled out' );
-
-    }
+    } 
     
-    // an error is confirmed 
-    setCheckError( roomNameError );
+    // prevents error message from popping up mid navigation
+    setTimeout(foundError, 50);
 
   }
 

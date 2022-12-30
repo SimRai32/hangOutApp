@@ -31,9 +31,10 @@ const socketIO = require( 'socket.io' )( http, {
 
 
 // connect to client side
-socketIO.on( 'connection', ( socket ) => {
+socketIO.on( 'connection', async ( socket ) => {
 
   const id = socket.id;
+  ids[ id ]= {};
   console.log( `⚡: ${ id } user just connected!` );
   
 
@@ -42,7 +43,6 @@ socketIO.on( 'connection', ( socket ) => {
     
     users[ arg ] = arg; 
     socket.username = arg;
-    ids[ id ]= {};
 
   });
 
@@ -53,7 +53,6 @@ socketIO.on( 'connection', ( socket ) => {
     let check = 'new';
     
     const { chatName, password } = arg;
-    console.log( rooms[ chatName ] );
     // checks if room already exists
     if ( rooms[ chatName ] ) {
 
@@ -65,6 +64,7 @@ socketIO.on( 'connection', ( socket ) => {
       rooms[ chatName ] = { chatName: chatName, password: password, id: roomID };
       roomID++;
       socket.join( chatName );
+      ids[ id ].room = chatName;
 
     }
 
@@ -113,7 +113,8 @@ socketIO.on( 'connection', ( socket ) => {
 
   socket.on( 'send-message', ( arg ) => {
 
-     
+     // sends message to users within a specific chatroom
+     console.log("send message",ids[ id ].room );
     socketIO.to( ids[ id ].room ).emit( 'messageResponse', arg );
 
   });
