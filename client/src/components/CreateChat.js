@@ -4,20 +4,26 @@ import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';
 
-const CreateChat = () => {
+const CreateChat = props => {
 
   const noError = 'no error';
   const roomNameError = 'error';
+  const success = 'success';
   const socket = useContext( SocketContext );
   const [ chatName, setChatName ] = useState('');
-  const [ checkError, setCheckError ] = useState( noError );
+  const [ check, setCheck ] = useState( noError );
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
-  const [ errorMessage, setErrorMessage ] = useState('');
+  const [ message, setMessage ] = useState('');
+  const [ alertType, setAlertType ] = useState('');
+  const { test } = props;
 
   // function that confirms an error
   const foundError = () => {
-    setCheckError( roomNameError );
+
+    setCheck( roomNameError );
+    setAlertType( roomNameError );
+
   };
 
 
@@ -25,9 +31,20 @@ const CreateChat = () => {
   const validate = e => {
 
     e.preventDefault();
-    setErrorMessage( 'Error: Both chat name and password must be filled out' );
-    
-    if ( chatName && password ) {
+    let testCheck = false;
+
+    if ( !chatName || !password ) {
+
+      setMessage( 'Error: Both chat name and password must be filled out' );
+
+    } else if ( test ) {
+
+      testCheck = true;
+      setCheck( success );
+      setAlertType( success );
+      setMessage( 'Chat Creation Successful!' );
+
+    } else if ( chatName && password ) {
 
       // sends chatName and password to server to check if it already exists and if not creates it
       socket.emit( 'create-room', { chatName, password });
@@ -40,35 +57,37 @@ const CreateChat = () => {
   
       });
 
-      setErrorMessage( 'Error: Room already exists. Please pick a different name' );
+      setMessage( 'Error: Room already exists. Please pick a different name' );
 
     } 
     
+
     // prevents error message from popping up mid navigation
-    setTimeout(foundError, 50);
+    console.log( message, check, testCheck  );
+    if ( !testCheck ) setTimeout( foundError, 50 );
 
   }
 
   return (
 
     < div className='createChat' >
-        { checkError === 'error' && (
-          < Collapse in={ checkError === 'error' } >
-            < Alert severity='error' variant='outlined' >
-              { errorMessage }
+        { check !== 'no error' && (
+          < Collapse in={ check !== 'no error' } >
+            < Alert severity={ alertType } variant='outlined' >
+              { message }
             </ Alert >
         </ Collapse >
         )}
         < form onSubmit={ validate } autoComplete='off' >
           < FormControlUnstyled defaultValue=''  >
             < FormLabel style={{ color: '#FFFFFF' }} >Chat Name:</ FormLabel >
-            <Input sx={{ width: 215 }} error={ roomNameError === checkError } value={ chatName } onChange={ event => setChatName( event.target.value )} />
+            <Input sx={{ width: 215 }} error={ roomNameError === check } value={ chatName } onChange={ event => setChatName( event.target.value )} />
             < FormHelperText />
           </ FormControlUnstyled >
           < br />
           < FormControlUnstyled defaultValue='' >
             < FormLabel style={{ color: '#FFFFFF' }}>Password:</ FormLabel >
-            < Input sx={{ width: 225 }} error={ roomNameError === checkError } type='password' value={ password } onChange={ event => setPassword( event.target.value ) } />
+            < Input sx={{ width: 225 }} error={ roomNameError === check } type='password' value={ password } onChange={ event => setPassword( event.target.value ) } />
             < FormHelperText />
           </ FormControlUnstyled >
           < br />

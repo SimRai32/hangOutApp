@@ -8,5 +8,5 @@ export default {
   component: UserButton,
 };
 
-const Template = () => < UserButton buttonName={ "Submit" } onClick={ action( 'username submitted' ) } test={ false } />;
+const Template = () => <UserButton buttonName={"Submit"} onClick={action('username submitted')} test={false}/>;
 export const submit = Template.bind({});

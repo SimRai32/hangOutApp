@@ -16,12 +16,13 @@ export default {
   }
 };
 
-const Template = () => < Home  test={ "testing" } />;
+const Template = () => < Home  test={ 'testing' } />;
 
 
 export const noName = Template.bind({});
 export const name = Template.bind({});
 export const nameError = Template.bind({});
+
 name.play = async ({ canvasElement }) => {
   const canvas = within( canvasElement );
   await userEvent.type( canvas.getByLabelText( 'Username' ), 'SimRai32' );

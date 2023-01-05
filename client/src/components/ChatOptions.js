@@ -6,8 +6,9 @@ import JoinChat from './JoinChat';
 import { useNavigate } from 'react-router-dom';
 
 
-const ChatOptions = () => {
+const ChatOptions = props => {
 
+  const { test } = props;
   const chatSelect = 'chat select';
   const chatForm = 'chat form';
   const chatList = 'chat list';
@@ -109,7 +110,7 @@ const ChatOptions = () => {
               onClick={ goBack }
             />
             < Container sx={ containerStyling( middle ) } >
-              < CreateChat />
+              < CreateChat test={ test } />
             </ Container >
           </ Container >
         )}
@@ -122,7 +123,7 @@ const ChatOptions = () => {
               onClick={ goBack }
             />
             < Container sx={ containerStyling( middle ) } >
-              < JoinChat />
+              < JoinChat test={ test } />
             </ Container >
           </ Container >
         )}

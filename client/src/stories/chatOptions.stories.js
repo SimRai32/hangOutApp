@@ -16,12 +16,13 @@ export default {
   }
 };
 
-const Template = () => < ChatOptions />;
+const Template = () => < ChatOptions test={ 'testing' } />;
 
 
 export const noClick = Template.bind({});
 export const createClick = Template.bind({});
 export const joinClick = Template.bind({});
+
 createClick.play = async ({ canvasElement }) => {
   const canvas = within( canvasElement );
   await userEvent.click( canvas.getByTestId( 'Create Chat' ) );
