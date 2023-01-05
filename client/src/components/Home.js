@@ -10,10 +10,9 @@ const Home = props => {
   const [ nameError, setNameError ] = useState( false );
   const isError = 'error';
   const { test } = props;
-  let testing = false;
   const socket = useContext( SocketContext );
   const navigate = useNavigate();
-  const [ errorMessage, setErrorMessage ] = useState('');
+  const [ message, setMessage ] = useState('');
 
   // this function executes when the Confirm button is clicked
   const handleConfirmation = e => {
@@ -21,26 +20,26 @@ const Home = props => {
     // prevents page from refreshing
     e.preventDefault();
 
+    
     // sends username to the server
-    if ( userName ) {
+    if ( !userName ) {
 
-    socket.emit( 'send-username', userName );
-    window.localStorage.setItem( 'userName', userName );
-    window.localStorage.setItem( 'id', 0 );
-    navigate( '/options' );
+      setNameError( isError );
+      setMessage( 'You must enter a username' );
+
+    } else if ( test ) {
+
+      setMessage( 'Successfully entered Username!' );
+
+    } else {
+
+      socket.emit( 'send-username', userName );
+      window.localStorage.setItem( 'userName', userName );
+      window.localStorage.setItem( 'id', 0 );
+      navigate( '/options' );
 
     }
-
-    setNameError( isError );
-    setErrorMessage( 'You must enter a username' );
-
-  }
-
-
-  // checking if this is a test run
-  if ( test ) {
-
-    testing = true;
+   
 
   }
 
@@ -63,11 +62,11 @@ const Home = props => {
         onChange={ event => setUserName( event.target.value ) }
         label='Username'
         error={ nameError }
-        helperText={ errorMessage }
+        helperText={ message }
       />
       < br />
       < br />
-      < UserButton test = { testing } buttonName={ 'Confirm' } onClick={ handleConfirmation } />  
+      < UserButton buttonName={ 'Confirm' } onClick={ handleConfirmation } />  
     </ Box >
     
   );

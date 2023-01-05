@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
     < Button  
       onClick = { onClick }
       disabled = { test }
-      data-testid="Button"
+      data-testid={ buttonName }
       sx={[
         {
           backgroundColor: '#FFFFFF',
