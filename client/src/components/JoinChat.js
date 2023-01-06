@@ -1,28 +1,31 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Alert, Collapse, FormHelperText, FormLabel, Input, Button, TableHead, TableRow, Paper, Table, TableBody, TableContainer, TableCell } from "@mui/material";
+import { Alert, Collapse, FormLabel, Input, Button, TableHead, TableRow, Paper, Table, TableBody, TableContainer, TableCell } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';
 import JoinChatPost from './JoinChatPost';
 import UserButton from './UserButton';
 
-const JoinChat = () => {
+const JoinChat = props => {
 
   const socket = useContext( SocketContext );
   const show = true;
   const hide = false;
   const noError = 'no error';
+  const success = 'success';
   const roomNameError = 'error';
+  const mismatchError = 'Error: Chat name and password do not match up';
   const [ chatList, setChatList ] = useState('');
-  const [ checkError, setCheckError ] = useState( noError );
+  const [ check, setCheck ] = useState( noError );
   const [ allChatRooms, setAllChatRooms ] = useState([]);
   const [ chatListKeys, setChatListKeys ] = useState([]);
   const [ chatName, setChatName ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ showList, setShowList ] = useState( hide );
-  const [ errorMessage, setErrorMessage ] = useState('');
+  const [ message, setMessage ] = useState('');
   const ref = useRef( null );
   const navigate = useNavigate();
+  const { test, roomTest } = props;
 
 
   // scrolls to the top of the page when the join button is pressed
@@ -52,16 +55,27 @@ const JoinChat = () => {
 
   // retrieves info of all the created chatrooms
   useEffect(() => {
+    
+    // checks if this a functional test
+    if ( !test ) {
 
-    socket.emit('retrieve chatrooms', { chatName, password });
+      socket.emit('retrieve chatrooms', { chatName, password });
 
-    socket.on('chat list', ( data ) => {
+      socket.on( 'chat list', ( data ) => {
 
-      const getkeys = Object.keys( data );
+        const getkeys = Object.keys( data );
+        setChatListKeys( getkeys );
+        setChatList( data );
+
+      })
+
+    } else {
+
+      const getkeys = Object.keys( roomTest );
       setChatListKeys( getkeys );
-      setChatList( data );
+      setChatList( roomTest );
 
-    });
+    }
 
   }, []);
 
@@ -103,8 +117,33 @@ const JoinChat = () => {
 
     e.preventDefault();
 
-    // checks if both password and chat name is filled out
-    if ( password && chatName ) {
+    // checks if the page is being tested
+    if ( test ) {
+
+      // checks if any of the sample rooms matches the chat name
+      if ( roomTest[ chatName ] ) {
+
+        const actualPassword = roomTest[ chatName ].password;
+
+        // checks if the password of the room matches
+        if ( actualPassword === password ) {
+
+          // success
+          setCheck( success );
+          setMessage( 'Joined Successfullly!' );
+
+        } else {
+
+          // failure
+          setCheck( roomNameError );
+          setMessage( mismatchError );
+
+        }
+
+      }
+
+    } // checks if both password and chat name is filled out
+      else if ( password && chatName ) {
 
       // sends password and chat name to the server to see if there is any matching pair
       socket.emit( 'join-room', { chatName, password } );
@@ -114,7 +153,9 @@ const JoinChat = () => {
         // if there was a matching pair the user is sent into the chatroom
         if ( check === 'passed' ) navigate( '/chatroom' );
 
-        setErrorMessage( 'Error: Chat name and password do not match up' );
+        // confirmed error
+        setCheck( roomNameError );
+        setMessage( mismatchError );
   
       });
 
@@ -123,12 +164,12 @@ const JoinChat = () => {
 
     if ( !password || !chatName ) {
 
-      setErrorMessage( 'Error: Both chat name and password must be filled out' );
+      // confirmed error
+      setCheck( roomNameError );
+      setMessage( 'Error: Both chat name and password must be filled out' );
 
     }
 
-    // confirmed error
-    setCheckError( roomNameError );
 
   }
 
@@ -136,10 +177,10 @@ const JoinChat = () => {
   return (
 
     < div className='joinChat' >
-      { checkError === 'error' && (
-          < Collapse in={ checkError === 'error' } >
-            < Alert severity='error' variant='outlined' >
-              { errorMessage }
+      { check !== 'no error' && (
+          < Collapse in={ check !== 'no error' } >
+            < Alert severity={ check } variant='outlined' >
+              { message }
             </ Alert >
         </ Collapse >
         )}
@@ -147,14 +188,12 @@ const JoinChat = () => {
       < form onSubmit={ validate } autoComplete='off' >
         < FormControlUnstyled defaultValue='' required >
           < FormLabel style={{ color: '#FFFFFF' }} >Chat Name:</ FormLabel >
-          < Input sx={{ width: 215 }} value={ chatName } error={ roomNameError === checkError } onChange={ event => setChatName( event.target.value ) } />
-          < FormHelperText />
+          < Input sx={{ width: 215 }} data-testid={ 'Chat Name' }  value={ chatName } error={ roomNameError === check } onChange={ event => setChatName( event.target.value ) } />
         </ FormControlUnstyled >
         < br />
         < FormControlUnstyled defaultValue='' required >
           < FormLabel style={{ color: '#FFFFFF' }} >Password:</ FormLabel >
-          < Input sx={{ width: 225 }} type='password' value={ password } error={ roomNameError === checkError } onChange={ event => setPassword( event.target.value ) } />
-          < FormHelperText />
+          < Input sx={{ width: 225 }} data-testid={ 'Password' }  type='password' value={ password } error={ roomNameError === check } onChange={ event => setPassword( event.target.value ) } />
         </ FormControlUnstyled >
         < br />
         < Button 
@@ -176,7 +215,7 @@ const JoinChat = () => {
       </ form >     
       < br />
       {( showList === hide ) && 
-      < UserButton test={ false } buttonName={ 'Chat List' }  onClick={  showingList  } />
+      < UserButton test={ false } data-testid={ 'Room List' } buttonName={ 'Chat List' }  onClick={  showingList  } />
       }
       {( showList === show ) && 
         <> 

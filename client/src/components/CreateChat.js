@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Alert, Collapse, FormHelperText, FormLabel, Input, Button } from "@mui/material";
+import { Alert, Collapse, FormLabel, Input, Button } from "@mui/material";
 import FormControlUnstyled from '@mui/base/FormControlUnstyled';
 import { SocketContext } from '../context/socket';
 import { useNavigate } from 'react-router-dom';
@@ -9,20 +9,21 @@ const CreateChat = props => {
   const noError = 'no error';
   const roomNameError = 'error';
   const success = 'success';
+  const roomExistsError = 'Error: Room already exists. Please pick a different name';
+  const emptyError = 'Error: Both chat name and password must be filled out';
+  const testSuccess = 'Chat Creation Successful!';
   const socket = useContext( SocketContext );
   const [ chatName, setChatName ] = useState('');
   const [ check, setCheck ] = useState( noError );
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
   const [ message, setMessage ] = useState('');
-  const [ alertType, setAlertType ] = useState('');
-  const { test } = props;
+  const { test, roomTest } = props;
 
   // function that confirms an error
   const foundError = () => {
 
     setCheck( roomNameError );
-    setAlertType( roomNameError );
 
   };
 
@@ -33,16 +34,28 @@ const CreateChat = props => {
     e.preventDefault();
     let testCheck = false;
 
+    // checks if both chatname and password are filled in
     if ( !chatName || !password ) {
 
-      setMessage( 'Error: Both chat name and password must be filled out' );
+      setMessage( emptyError );
 
+      // checks if this is a functional test
     } else if ( test ) {
 
-      testCheck = true;
-      setCheck( success );
-      setAlertType( success );
-      setMessage( 'Chat Creation Successful!' );
+      // checks if test chatroom exists
+      if ( !roomTest[chatName] ) {
+
+        testCheck = true;
+        setCheck( success );
+        setMessage( testSuccess );
+
+      } else {
+
+        setCheck( roomNameError );
+        setMessage( roomExistsError );
+
+      }
+
 
     } else if ( chatName && password ) {
 
@@ -57,13 +70,12 @@ const CreateChat = props => {
   
       });
 
-      setMessage( 'Error: Room already exists. Please pick a different name' );
+      setMessage( roomExistsError );
 
     } 
     
 
     // prevents error message from popping up mid navigation
-    console.log( message, check, testCheck  );
     if ( !testCheck ) setTimeout( foundError, 50 );
 
   }
@@ -73,22 +85,20 @@ const CreateChat = props => {
     < div className='createChat' >
         { check !== 'no error' && (
           < Collapse in={ check !== 'no error' } >
-            < Alert severity={ alertType } variant='outlined' >
+            < Alert severity={ check } variant='outlined' >
               { message }
             </ Alert >
         </ Collapse >
         )}
         < form onSubmit={ validate } autoComplete='off' >
-          < FormControlUnstyled defaultValue=''  >
+          < FormControlUnstyled defaultValue='chaaat'  >
             < FormLabel style={{ color: '#FFFFFF' }} >Chat Name:</ FormLabel >
-            <Input sx={{ width: 215 }} error={ roomNameError === check } value={ chatName } onChange={ event => setChatName( event.target.value )} />
-            < FormHelperText />
+            <Input sx={{ width: 215 }} data-testid={ 'Chat Name' } error={ roomNameError === check } value={ chatName } onChange={ event => setChatName( event.target.value )} />
           </ FormControlUnstyled >
           < br />
-          < FormControlUnstyled defaultValue='' >
+          < FormControlUnstyled defaultValue='paaaaaaaa' >
             < FormLabel style={{ color: '#FFFFFF' }}>Password:</ FormLabel >
-            < Input sx={{ width: 225 }} error={ roomNameError === check } type='password' value={ password } onChange={ event => setPassword( event.target.value ) } />
-            < FormHelperText />
+            < Input sx={{ width: 225 }} data-testid={ 'Password' } error={ roomNameError === check } type='password' value={ password } onChange={ event => setPassword( event.target.value ) } />
           </ FormControlUnstyled >
           < br />
           < Button 
